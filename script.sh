@@ -15,13 +15,13 @@ cd "$parent_path" || exit
 
 # Check if backup folder exists, create one if it does not
 if [ ! -d "$parent_path/$backup_folder" ]; then
-  mkdir "$parent_path/$backup_folder"
+  mkdir "$userbackupdir"
 fi
 
 # Copy important files into backup folder
 while read -r path; do
   file=$(basename "$path")
-  cp -r "$path" "$parent_path/$backup_folder"
+  cp -r "$path" "$userbackupdir"
 done < <(grep 'path_' "$parent_path"/.env | sed 's/^.*=//')
 
 # Git commands
@@ -30,6 +30,6 @@ git filter-branch --force --index-filter \
   'git rm -r --cached --ignore-unmatch "$parent_path"/.env' \
   --prune-empty --tag-name-filter cat -- --all
 #git rm -rf --cached "$parent_path"/.env
-git add "$parent_path/$userbackupdir"
+git add "$userbackupdir"
 git commit -m "New backup from $(date +"%d-%m-%y")"
 git push https://"$github_token"@github.com/"$github_username"/"$github_repository".git
