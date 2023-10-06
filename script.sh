@@ -8,6 +8,7 @@ github_token=$(grep 'github_token=' "$parent_path"/.env | sed 's/^.*=//')
 github_username=$(grep 'github_username=' "$parent_path"/.env | sed 's/^.*=//')
 github_repository=$(grep 'github_repository=' "$parent_path"/.env | sed 's/^.*=//')
 backup_folder=$(grep 'backup_folder=' "$parent_path"/.env | sed 's/^.*=//')
+userbackupdir=$(grep 'userbackupdir=' "$parent_path"/.env | sed 's/^.*=//')
 
 # Change directory to parent path
 cd "$parent_path" || exit
@@ -29,6 +30,6 @@ git filter-branch --force --index-filter \
   'git rm -r --cached --ignore-unmatch "$parent_path"/.env' \
   --prune-empty --tag-name-filter cat -- --all
 #git rm -rf --cached "$parent_path"/.env
-git add "$parent_path"
+git add "$parent_path/$userbackupdir"
 git commit -m "New backup from $(date +"%d-%m-%y")"
 git push https://"$github_token"@github.com/"$github_username"/"$github_repository".git
